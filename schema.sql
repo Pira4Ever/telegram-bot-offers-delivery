@@ -1,0 +1,6 @@
+CREATE TABLE tabloides (
+  id CHAR(64) PRIMARY KEY,
+  mercado VARCHAR(50) NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  protected BOOLEAN DEFAULT FALSE
+);
