@@ -35,7 +35,8 @@ func main() {
 
 	ctx := context.Background()
 
-	conn, err := pgx.Connect(ctx, os.Getenv("DATABASE_URL"))
+	conn, err := connectWithRetry(ctx, os.Getenv("DATABASE_URL"), 10)
+
 	if err != nil {
 		fmt.Println("ERROR DB")
 	}
@@ -62,6 +63,25 @@ func main() {
 	sendMessages(bot)
 	queries.DeleteOld(context.Background())
 	reports(bot, queries)
+}
+
+func connectWithRetry(ctx context.Context, dbURL string, maxRetries int) (*pgx.Conn, error) {
+	var conn *pgx.Conn
+	var err error
+
+	for i := 0; i < maxRetries; i++ {
+		conn, err = pgx.Connect(ctx, dbURL)
+		if err == nil {
+			log.Println("✅ Conectado ao banco com sucesso!")
+			return conn, nil
+		}
+
+		wait := time.Duration(15<<i) * time.Second // Ex: 2s, 4s, 8s, 16s...
+		log.Printf("⏳ Tentativa %d: falha ao conectar ao banco. Esperando %s antes de tentar novamente...\n", i+1, wait)
+		time.Sleep(wait)
+	}
+
+	return nil, fmt.Errorf("❌ Falha ao conectar ao banco após %d tentativas: %w", maxRetries, err)
 }
 
 func reports(bot *tgbotapi.BotAPI, queries *db.Queries) {
