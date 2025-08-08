@@ -56,13 +56,25 @@ func main() {
 	}
 
 	client := &http.Client{Transport: tr}
+	log.Println("Extraindo ofertas do Roldão Atacadista")
 	scrapRoldao(client, queries)
+	log.Println("Enviando ofertas do Roldão Atacadista")
+	sendMessages(bot)
+	log.Println("Extraindo ofertas do Supermercados Pague Menos")
 	scrapPagueMenos(client, queries)
+	log.Println("Enviando ofertas do Supermercados Pague Menos")
+	sendMessages(bot)
+	log.Println("Extraindo ofertas do Delta Atacadista")
 	scrapDelta(client, queries)
+	log.Println("Enviando ofertas do Delta Atacadista")
+	sendMessages(bot)
+	log.Println("Extraindo ofertas do Supermercados São Vicente")
 	scrapSaoVicente(client, queries)
+	log.Println("Enviando ofertas do Supermercados São Vicente")
 	sendMessages(bot)
 	queries.DeleteOld(context.Background())
 	reports(bot, queries)
+	log.Println("Enviando relatório semanal")
 }
 
 func connectWithRetry(ctx context.Context, dbURL string, maxRetries int) (*pgx.Conn, error) {
@@ -183,6 +195,7 @@ func sendMessages(bot *tgbotapi.BotAPI) {
 	}
 
 	os.RemoveAll("tmp")
+	os.MkdirAll("tmp", 0755)
 }
 
 func scrapRoldao(client *http.Client, queries *db.Queries) {
