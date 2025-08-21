@@ -136,7 +136,7 @@ func reports(bot *tgbotapi.BotAPI, queries *db.Queries) {
 func pdfToImages(mercado string) {
 	toCreate := filepath.Join("tmp", mercado, fmt.Sprintf("%d", time.Now().Unix()))
 	os.MkdirAll(toCreate, 0755)
-	cmd := exec.Command("pdftoppm", "-r", "90", filepath.Join("tmp", mercado, "ofertas.pdf"), filepath.Join(toCreate, "page"), "-png")
+	cmd := exec.Command("pdftoppm", "-r", "80", filepath.Join("tmp", mercado, "ofertas.pdf"), filepath.Join(toCreate, "page"), "-png")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
