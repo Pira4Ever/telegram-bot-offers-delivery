@@ -291,8 +291,10 @@ func scrapPagueMenos(client *http.Client, queries *db.Queries) {
 		href, exists := s.Attr("href")
 
 		if exists {
-			if !strings.Contains(href, "superpaguemenos.com.br") {
+			if !strings.Contains(href, "superpaguemenos.com.br") && !strings.Contains(href, "//io.convertiez.com.br") {
 				href = "https://www.superpaguemenos.com.br" + href
+			} else if strings.Contains(href, "//io.convertiez.com.br") {
+				href = "https://" + href[2:]
 			}
 			existsDb, err := downloadFile("ofertas.pdf", href, client, queries, "Supermercados Pague Menos")
 			if err != nil {
