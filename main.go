@@ -27,6 +27,7 @@ import (
 )
 
 func main() {
+	log.Println("Starting bot")
 	err := os.MkdirAll("tmp", 0755)
 
 	if err != nil {
